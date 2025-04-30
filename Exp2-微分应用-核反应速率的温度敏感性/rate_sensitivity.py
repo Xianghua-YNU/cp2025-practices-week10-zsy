@@ -14,8 +14,10 @@ def q3a(T):
     # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
     if T == 0:
         return 0
-    else:
-        return 5.09e-11 * T8**3 * np.exp(-44.027 / T8)
+    T8 = T / 1e8  # 定义 T8 变量
+    
+    # 使用公式计算 q3a
+    return 5.09e-11 * T8**3 * np.exp(-44.027 / T8)
 
 def plot_rate(filename="rate_vs_temp.png"):
     """绘制速率因子随温度变化的 log-log 图"""
@@ -35,12 +37,12 @@ def plot_rate(filename="rate_vs_temp.png"):
     plt.loglog(temps, rates, label='3-alpha反应速率')
     
     # 添加适当的标签和标题
-    plt.xlabel('温度 T (K)')
-    plt.ylabel('速率因子 q / (rho^2 Y^3) (erg cm^6 / (g^3 s))')
-    plt.title('3-alpha反应速率与温度的关系')
+    plt.xlabel(' T (K)')
+    plt.ylabel('Rate factor q / (rho^2 Y^3) (erg cm^6 / (g^3 s))')
+    plt.title('3-alpha the relationship between reaction rate and temperature')
     plt.grid(True, which="both", ls="--")
     plt.legend()
-    plt.savefig(filename)
+    plt.savefig('the relationship between reaction rate and temperature. png')
     plt.close()
 
 if __name__ == "__main__":
