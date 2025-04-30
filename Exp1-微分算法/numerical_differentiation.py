@@ -129,6 +129,11 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax4.set_ylabel('Mean Error')
     ax4.legend()
     ax4.grid(True)
+
+    errors = [abs(r - expected) for r in results]
+for i in range(len(errors)-1):
+    assert errors[i] > errors[i+1], f"Richardson外推精度未随阶数提高而提高。误差序列：{errors}"
+
     
     plt.show()
     
