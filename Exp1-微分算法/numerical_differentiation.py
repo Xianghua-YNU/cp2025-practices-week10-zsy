@@ -27,7 +27,7 @@ def get_analytical_derivative():
     f_prime_func = lambdify(x, f_prime_sym)
     return f_prime_func
 
-def calculate_central_difference(x, f):
+def calculate_central_difference(x, f, h=0.1):
     """使用中心差分法计算数值导数
     
     参数：
@@ -56,6 +56,7 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
     x = np.asarray(x)
+    h = 0.1
     n = len(x)
     d = np.zeros((max_order + 1, n), float)
     for i in range(max_order + 1):
