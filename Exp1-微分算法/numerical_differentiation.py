@@ -148,7 +148,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
 def main():
     """运行数值微分实验的主函数"""
     # TODO: 设置实验参数
-    x = np.linspace(-2, 2, 21)
+    x = np.linspace(-6, -1, 20)
     h = 0.1
     max_order = 3
     # TODO: 获取解析导数函数
