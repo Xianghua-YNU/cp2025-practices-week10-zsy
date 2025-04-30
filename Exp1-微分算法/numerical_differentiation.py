@@ -24,9 +24,9 @@ def get_analytical_derivative():
     x = symbols('x')
     f_sym = 1 + 0.5 * tanh(2 * x)
     f_prime_sym = diff(f_sym, x)
-    f_prime_func = lambdify(x, f_prime_sym)
+    f_prime_func = lambdify(x, f_prime_sym, 'numpy')
     return f_prime_func
-
+    
 def calculate_central_difference(x, f, h=0.1):
     """使用中心差分法计算数值导数
     
@@ -61,20 +61,21 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
     if x.ndim == 0:
         x = np.array([x])
         is_scalar = True
-    
+
     n = len(x)
     d = np.zeros((max_order + 1, n), float)
     current_h = h
+
     for i in range(max_order + 1):
-        di = (f(x + current_h) - f(x - current_h)) / (2 * current_h)
+        d[i] = (f(x + current_h) - f(x - current_h)) / (2 * current_h)
         if i > 0:
-            di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
-        d[i] = di
+            d[i] = (4 ** i * d[i] - d[i - 1]) / (4 ** i - 1)
         current_h *= 0.5
-    
+
     if is_scalar:
         return d[:, 0]
-    return d
+    else:
+        return d
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
     """创建对比图，展示导数计算结果和误差分析
