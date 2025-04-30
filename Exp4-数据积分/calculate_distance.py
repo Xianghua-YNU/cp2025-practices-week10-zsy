@@ -17,7 +17,7 @@ def main():
         # 3. 计算总距离（TODO：使用numpy.trapz）
         total_distance = np.trapz(v, t)
         print(f"总运行距离: {total_distance:.2f} 米")
-        
+    
         # 4. 计算累积距离（TODO：使用cumulative_trapezoid）
         distance = cumulative_trapezoid(v, t, initial=0)
 
