@@ -73,9 +73,9 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
         current_h *= 0.5
 
     if is_scalar:
-        return d[:max_order + 1, 0]
+        return d[1:max_order + 1, 0]  # 返回第1到max_order阶
     else:
-        return d[:max_order + 1]
+        return d[1:max_order + 1]
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
     """创建对比图，展示导数计算结果和误差分析
@@ -93,22 +93,22 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     # TODO: 实现四个子图的绘制：
     # 1. 导数对比图
     ax1.plot(x, dy_central, label='Central Difference')
-    ax1.plot(x, dy_richardson[0], label='Richardson (Order 0)')
+    ax1.plot(x, dy_richardson[0], label='Richardson (Order 1)')  # 使用第1阶
     ax1.plot(x, df_analytical(x), label='Analytical', linestyle='--')
     ax1.set_title('Derivative Comparison')
     ax1.set_xlabel('x')
-    ax1.set_ylabel("f'(x)")
+    ax1.set_ylabel('f\'(x)')
     ax1.legend()
     # 2. 误差分析图（对数坐标）
     ax2.loglog(x, np.abs(dy_central - df_analytical(x)), label='Central Difference')
-    ax2.loglog(x, np.abs(dy_richardson[0] - df_analytical(x)), label='Richardson (Order 0)')
+    ax2.loglog(x, np.abs(dy_richardson[0] - df_analytical(x)), label='Richardson (Order 1)')  # 使用第1阶
     ax2.set_title('Error Analysis')
     ax2.set_xlabel('x')
     ax2.set_ylabel('Error')
     ax2.legend()
     # 3. Richardson外推不同阶数误差对比图（对数坐标）
-    for i in range(dy_richardson.shape[0]):
-        ax3.loglog(x, np.abs(dy_richardson[i] - df_analytical(x)), label=f'Order {i}')
+    for i in range(len(dy_richardson)):
+        ax3.loglog(x, np.abs(dy_richardson[i] - df_analytical(x)), label=f'Order {i+1}')  # 从1阶开始
     ax3.set_title('Richardson Extrapolation Error')
     ax3.set_xlabel('x')
     ax3.set_ylabel('Error')
@@ -123,7 +123,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     mean_errors = np.array(mean_errors)
     
     for i in range(len(mean_errors[0])):
-        ax4.loglog(h_values, mean_errors[:, i], marker='o', label=f'Order {i}')
+        ax4.loglog(h_values, mean_errors[:, i], marker='o', label=f'Order {i+1}')  # 从1阶开始
     ax4.set_title('Step Size Sensitivity')
     ax4.set_xlabel('Step Size (h)')
     ax4.set_ylabel('Mean Error')
