@@ -64,12 +64,13 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
     
     n = len(x)
     d = np.zeros((max_order + 1, n), float)
+    current_h = h
     for i in range(max_order + 1):
-        di = (f(x + h) - f(x - h)) / (2 * h)
+        di = (f(x + current_h) - f(x - current_h)) / (2 * current_h)
         if i > 0:
             di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
         d[i] = di
-        h *= 0.5
+        current_h *= 0.5
     
     if is_scalar:
         return d[:, 0]
@@ -111,11 +112,12 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax3.set_xlabel('x')
     ax3.set_ylabel('Error')
     ax3.legend()
+
     # 4. 步长敏感性分析图（双对数坐标）
     h_values = np.array([0.1, 0.01, 0.001, 1e-4, 1e-5, 1e-6])
     mean_errors = []
-    for h in h_values:
-        dy_rich = richardson_derivative_all_orders(x, f, h, max_order=3)
+    for current_h in h_values:
+        dy_rich = richardson_derivative_all_orders(x, f, current_h, max_order=3)
         mean_errors.append(np.mean(np.abs(dy_rich - df_analytical(x).reshape(1, -1)), axis=1))
     mean_errors = np.array(mean_errors)
     for i in range(dy_rich.shape[0]):
@@ -125,8 +127,9 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax4.set_ylabel('Mean Error')
     ax4.legend()
     ax4.grid(True)
+    
     plt.show()
-
+    
     plt.savefig('derivative_comparison.png')
     
 
