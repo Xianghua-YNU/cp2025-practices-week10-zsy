@@ -44,7 +44,7 @@ def plot_rate(filename="rate_vs_temp.png"):
     plt.title('3-alpha the relationship between reaction rate and temperature')
     plt.grid(True, which="both", ls="--")
     plt.legend()
-    plt.savefig('the relationship between reaction rate and temperature. png')
+    plt.savefig(filename)
     plt.close()
 
 if __name__ == "__main__":
