@@ -71,12 +71,12 @@ def main():
         # 输出结果（模板已给出）
         print(f"N = {N}")
         print(f"Trapezoidal rule error: {trapezoidal_result:.8f}, 相对误差: {trapezoidal_error:.2e}")
-        print(f"Simpson's law error: {simpson_result:.8f}, 相对误差: {simpson_error:.2e}")
+        print(f"Simpson law error: {simpson_result:.8f}, 相对误差: {simpson_error:.2e}")
         print("-" * 40)
         
     plt.figure(figsize=(10, 6))
     plt.loglog(N_values, trapezoidal_errors, 'o-', label='Trapezoidal rule error')
-    plt.loglog(N_values, simpson_errors, 'o-', label='Simpson's law error')
+    plt.loglog(N_values, simpson_errors, 'o-', label='Simpson law error')
     plt.xlabel('Subinterval number N')
     plt.ylabel('relative error')
     plt.title('Comparison of errors between Simpson's Rule and Trapezoidal Rule')
