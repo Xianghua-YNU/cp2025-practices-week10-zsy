@@ -163,7 +163,7 @@ def main():
         for xi in x
     ])
     
-    create_comparison_plot(x, x, dy_central, dy_richardson, df_analytical)
+    create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical)
     plt.savefig('derivative_comparison.png')
 
 if __name__ == '__main__':
