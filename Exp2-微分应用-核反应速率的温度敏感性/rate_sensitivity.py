@@ -15,10 +15,8 @@ def q3a(T):
     if T <= 0:
         return 0.0
     
-    # 将温度转换为以 1e8 K 为单位的温度
     T8 = T / 1e8
     
-    # 使用公式计算 q3a
     return 5.09e11 * T8**(-3.0) * np.exp(-44.027 / T8)
 
 def plot_rate(filename="rate_vs_temp.png"):
@@ -30,15 +28,12 @@ def plot_rate(filename="rate_vs_temp.png"):
     # 3. 使用 plt.loglog 绘制双对数图
     # 4. 添加适当的标签和标题
     temps = np.logspace(8, 10, 200)  # 从1e8 K到1e10 K生成200个点
-    
-    # 计算对应的速率值
+
     rates = [q3a(T) for T in temps]
     
-    # 使用 plt.loglog 绘制双对数图
     plt.figure(figsize=(10, 6))
     plt.loglog(temps, rates, label='3-alpha反应速率')
     
-    # 添加适当的标签和标题
     plt.xlabel(' T (K)')
     plt.ylabel('Rate factor q / (rho^2 Y^3) (erg cm^6 / (g^3 s))')
     plt.title('3-alpha the relationship between reaction rate and temperature')
@@ -64,23 +59,14 @@ if __name__ == "__main__":
 
     # TODO: 调用绘图函数展示结果
     for T0 in temperatures_K:
-        # 计算 q3a 在 T0 处的值
         q0 = q3a(T0)
-        
-        # 计算 T0 + h*T0 处的 q3a 值
         q_plus = q3a(T0 + h*T0)
-        
-        # 计算导数 dq/dT 的近似值
         dq_dT = (q_plus - q0) / (h*T0)
-        
-        # 计算温度敏感性指数 nu
         if q0 == 0:
             nu = 0
         else:
             nu = T0 * dq_dT / q0
         
-        # 打印结果
         print(f"{T0:.1e}   :   {nu:.3f}")
     
-    # 调用绘图函数展示结果
     plot_rate()
