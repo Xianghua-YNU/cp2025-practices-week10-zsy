@@ -27,7 +27,7 @@ def get_analytical_derivative():
     f_prime_func = lambdify(x, f_prime_sym)
     return f_prime_func
 
-def calculate_central_difference(x, f):
+def calculate_central_difference(x, f, h=0.1):
     """使用中心差分法计算数值导数
     
     参数：
@@ -38,8 +38,7 @@ def calculate_central_difference(x, f):
         numpy数组，x[1:-1]处的导数值
     """
     # TODO: 实现中心差分法计算导数
-    x = np.asarray(x)  # 将输入转换为numpy数组
-    h = 0.1
+    x = np.asarray(x)
     df = (f(x + h) - f(x - h)) / (2 * h)
     return df
 
@@ -129,6 +128,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     plt.show()
 
     plt.savefig('derivative_comparison.png')
+    
 
 def main():
     """运行数值微分实验的主函数"""
