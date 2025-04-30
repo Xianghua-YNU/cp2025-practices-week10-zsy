@@ -70,8 +70,8 @@ def main():
 
         # 输出结果（模板已给出）
         print(f"N = {N}")
-        print(f"梯形法则结果: {trapezoidal_result:.8f}, 相对误差: {trapezoidal_error:.2e}")
-        print(f"Simpson法则结果: {simpson_result:.8f}, 相对误差: {simpson_error:.2e}")
+        print(f"Trapezoidal rule error: {trapezoidal_result:.8f}, 相对误差: {trapezoidal_error:.2e}")
+        print(f"Simpson's law error: {simpson_result:.8f}, 相对误差: {simpson_error:.2e}")
         print("-" * 40)
         
     plt.figure(figsize=(10, 6))
