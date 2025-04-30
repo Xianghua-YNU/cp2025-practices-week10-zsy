@@ -6,19 +6,20 @@ import os
 def main():
     try:
         # 1. 获取数据文件路径（TODO：使用相对路径）
-        data_file = None
+        current_dir = os.path.dirname(__file__)
+        data_file = os.path.join(current_dir, "Velocities.txt")
         
         # 2. 读取数据（TODO：使用numpy.loadtxt）
-        data = None
-        t = None  # 时间列
-        v = None  # 速度列
+        data = np.loadtxt(data_file)
+        t = data[:, 0]  # 时间列
+        v = data[:, 1]  # 速度列
 
         # 3. 计算总距离（TODO：使用numpy.trapz）
-        total_distance = None
+        total_distance = np.trapz(v, t)
         print(f"总运行距离: {total_distance:.2f} 米")
-
+        
         # 4. 计算累积距离（TODO：使用cumulative_trapezoid）
-        distance = None
+        distance = cumulative_trapezoid(v, t, initial=0)
 
         # 5. 绘制图表
         plt.figure(figsize=(10, 6))
@@ -29,6 +30,8 @@ def main():
         plt.ylabel('Velocity (m/s) / Distance (m)')
         plt.legend()
         plt.grid(True)
+
+        plt.savefig(os.path.join(current_dir, 'velocity_distance.png'))
         plt.show()
 
     except FileNotFoundError:
