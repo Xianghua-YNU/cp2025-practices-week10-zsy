@@ -121,7 +121,8 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
         dy_rich = richardson_derivative_all_orders(x, f, current_h, max_order=3)
         mean_errors.append(np.mean(np.abs(dy_rich - df_analytical(x).reshape(1, -1)), axis=1))
     mean_errors = np.array(mean_errors)
-    for i in range(dy_rich.shape[0]):
+    
+    for i in range(len(mean_errors[0])):
         ax4.loglog(h_values, mean_errors[:, i], marker='o', label=f'Order {i}')
     ax4.set_title('Step Size Sensitivity')
     ax4.set_xlabel('Step Size (h)')
@@ -137,7 +138,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
 def main():
     """运行数值微分实验的主函数"""
     # TODO: 设置实验参数
-    x = np.linspace(-2, 2, 100)
+    x = np.linspace(-2, 2, 21)
     h = 0.1
     max_order = 3
     # TODO: 获取解析导数函数
