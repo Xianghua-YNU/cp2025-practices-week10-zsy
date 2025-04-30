@@ -55,7 +55,6 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
-    
     x = np.asarray(x)
     is_scalar = False
     if x.ndim == 0:
@@ -76,6 +75,7 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
         return d[1:max_order + 1, 0]  # 返回第1到max_order阶
     else:
         return d[1:max_order + 1]
+    
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
     """创建对比图，展示导数计算结果和误差分析
