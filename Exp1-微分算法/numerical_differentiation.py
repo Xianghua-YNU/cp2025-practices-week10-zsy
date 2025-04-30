@@ -57,8 +57,9 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
     x = np.asarray(x)  # 将输入转换为numpy数组
+    h = 0.1
     is_scalar = False
-    if x.ndim == 0:  # 检查是否为标量
+    if x.ndim == 0:
         x = np.array([x])
         is_scalar = True
     
@@ -69,9 +70,9 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
         if i > 0:
             di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
         d[i] = di
-        h *= 0.5  # 每层外推步长减半
+        h *= 0.5
     
-    if is_scalar:  # 如果输入是标量，返回一维数组
+    if is_scalar:
         return d[:, 0]
     return d
 
