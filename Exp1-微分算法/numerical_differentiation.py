@@ -22,10 +22,8 @@ def get_analytical_derivative():
     """
     # TODO: 使用sympy计算解析导数并返回可调用的函数
     x = symbols('x')
-    f_sym = 1 + 0.5 * tanh(2 * x)
-    f_prime_sym = diff(f_sym, x)
-    f_prime_func = lambdify(x, f_prime_sym)
-    return f_prime_func
+    expr = diff(1 + 0.5 * tanh(2 * x), x)
+    return lambdify(x, expr)
 
 def calculate_central_difference(x, f):
     """使用中心差分法计算数值导数
