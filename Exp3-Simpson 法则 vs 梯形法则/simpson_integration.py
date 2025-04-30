@@ -36,7 +36,7 @@ def simpson(f, a, b, N):
     # TODO: 实现Simpson法则积分
     # 注意：需先检查N是否为偶数
     if N % 2 != 0:
-        raise ValueError("N 必须为偶数")
+        raise ValueError("Simpson 法则要求 N 必须为偶数")
     h = (b - a) / N
     x = np.linspace(a, b, N+1)
     y = f(x)
@@ -55,7 +55,11 @@ def main():
     for N in [100, 1000]:  # 不同子区间数
         # TODO: 调用积分函数并计算误差
         trapezoidal_result = trapezoidal(f, a, b, N)
-        simpson_result = simpson(f, a, b, N)
+        try:
+            simpson_result = simpson(f, a, b, N)
+        except ValueError as e:
+            print(f"Error for N={N}: {e}")
+            continue
         # TODO: 计算相对误差
         trapezoidal_error = abs(trapezoidal_result - exact_integral) / exact_integral
         simpson_error = abs(simpson_result - exact_integral) / exact_integral
@@ -63,7 +67,6 @@ def main():
         simpson_results.append(simpson_result)
         trapezoidal_errors.append(trapezoidal_error)
         simpson_errors.append(simpson_error)
-     
 
         # 输出结果（模板已给出）
         print(f"N = {N}")
