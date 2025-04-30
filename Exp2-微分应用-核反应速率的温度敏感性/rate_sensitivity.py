@@ -12,11 +12,11 @@ def q3a(T):
     # 1. 将温度转换为以 10^8 K 为单位
     # 2. 注意处理温度为零的特殊情况
     # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
-    if T == 0:
-        return 0
-    T8 = T / 1e8  # 定义 T8 变量
+    if T <= 0:
+        raise ValueError("Temperature should be positive.")
     
-    # 使用公式计算 q3a
+    T8 = T / 1e8
+    
     return 5.09e-11 * T8**3 * np.exp(-44.027 / T8)
 
 def plot_rate(filename="rate_vs_temp.png"):
