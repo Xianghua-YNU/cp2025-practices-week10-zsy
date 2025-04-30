@@ -55,6 +55,8 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
+    R = np.zeros((max_order + 1, max_order + 1))
+    
     for i in range(max_order + 1):
         hi = h / (2**i)
         R[i, 0] = (f(x + hi) - f(x - hi)) / (2 * hi)
