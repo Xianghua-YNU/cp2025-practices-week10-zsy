@@ -159,7 +159,7 @@ def main():
     x_central = x[1:-1]
     # TODO: 计算Richardson外推导数
     dy_richardson = np.array([
-        richardson_derivative_all_orders(xi, f, h_initial, max_order=max_order)
+        richardson_derivative_all_orders(xi, f, h, max_order=max_order)
         for xi in x
     ])
     
