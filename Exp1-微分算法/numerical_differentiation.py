@@ -55,20 +55,16 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
-    x = np.asarray(x)
-    if x.ndim == 0:  # 如果是标量，转换为数组
-        x = np.array([x])
-    n = len(x)
-    d = np.zeros((max_order + 1, n), float)
-    current_h = h
-
     for i in range(max_order + 1):
-        d[i] = (f(x + current_h) - f(x - current_h)) / (2 * current_h)
-        if i > 0:
-            d[i] = (4 ** i * d[i] - d[i - 1]) / (4 ** i - 1)
-        current_h *= 0.5
-
-    return d[1:max_order + 1]
+        hi = h / (2**i)
+        R[i, 0] = (f(x + hi) - f(x - hi)) / (2 * hi)
+    
+    # Richardson外推
+    for j in range(1, max_order + 1):
+        for i in range(max_order - j + 1):
+            R[i, j] = (4**j * R[i+1, j-1] - R[i, j-1]) / (4**j - 1)
+    
+    return [R[0, j] for j in range(1, max_order + 1)]
     
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
@@ -154,10 +150,14 @@ def main():
     # TODO: 获取解析导数函数
     df_analytical = get_analytical_derivative()
     # TODO: 计算中心差分导数
-    dy_central = calculate_central_difference(x, f, h)
+    dy_central = calculate_central_difference(x, f)
+    x_central = x[1:-1]
     # TODO: 计算Richardson外推导数
-    dy_richardson = richardson_derivative_all_orders(x, f, h, max_order)
-    # TODO: 绘制结果对比图
+    dy_richardson = np.array([
+        richardson_derivative_all_orders(xi, f, h_initial, max_order=max_order)
+        for xi in x
+    ])
+    
     create_comparison_plot(x, x, dy_central, dy_richardson, df_analytical)
     plt.savefig('derivative_comparison.png')
 
