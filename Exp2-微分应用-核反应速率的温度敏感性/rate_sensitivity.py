@@ -19,7 +19,7 @@ def q3a(T):
     T8 = T / 1e8
     
     # 使用公式计算 q3a
-    return 5.09e-11 * T8**3 * np.exp(-44.027 / T8)
+    return 5.09e11 * T8**(-3.0) * np.exp(-44.027 / T8)
 
 def plot_rate(filename="rate_vs_temp.png"):
     """绘制速率因子随温度变化的 log-log 图"""
