@@ -79,7 +79,7 @@ def main():
     plt.loglog(N_values, simpson_errors, 'o-', label='Simpson law error')
     plt.xlabel('Subinterval number N')
     plt.ylabel('relative error')
-    plt.title('Comparison of errors between Simpson's Rule and Trapezoidal Rule')
+    plt.title('Comparison of errors between Simpson Rule and Trapezoidal Rule')
     plt.legend()
     plt.grid(True)
     plt.savefig('integration_errors.png')
