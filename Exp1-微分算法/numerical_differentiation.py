@@ -27,7 +27,7 @@ def get_analytical_derivative():
     f_prime_func = lambdify(x, f_prime_sym, 'numpy')
     return f_prime_func
     
-def calculate_central_difference(x, f, h=0.1):
+def calculate_central_difference(x, f):
     """使用中心差分法计算数值导数
     
     参数：
@@ -38,9 +38,11 @@ def calculate_central_difference(x, f, h=0.1):
         numpy数组，x[1:-1]处的导数值
     """
     # TODO: 实现中心差分法计算导数
-    x = np.asarray(x)
-    df = (f(x + h) - f(x - h)) / (2 * h)
-    return df
+    dy = []
+    for i in range(1, len(x)-1):
+        h = x[i+1] - x[i]
+        dy.append((f(x[i+1]) - f(x[i-1])) / (2 * h))
+    return np.array(dy)
 
 def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
     """使用Richardson外推法计算不同阶数的导数值
@@ -149,6 +151,7 @@ def main():
     x = np.linspace(-6, -1, 20)
     h = 0.1
     max_order = 3
+    
     # TODO: 获取解析导数函数
     df_analytical = get_analytical_derivative()
     # TODO: 计算中心差分导数
