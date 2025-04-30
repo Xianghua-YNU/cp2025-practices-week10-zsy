@@ -27,7 +27,7 @@ def get_analytical_derivative():
     f_prime_func = lambdify(x, f_prime_sym)
     return f_prime_func
 
-def calculate_central_difference(x, f, h=0.1):
+def calculate_central_difference(x, f):
     """使用中心差分法计算数值导数
     
     参数：
@@ -38,7 +38,8 @@ def calculate_central_difference(x, f, h=0.1):
         numpy数组，x[1:-1]处的导数值
     """
     # TODO: 实现中心差分法计算导数
-    x = np.asarray(x)
+    x = np.asarray(x)  # 将输入转换为numpy数组
+    h = 0.1
     df = (f(x + h) - f(x - h)) / (2 * h)
     return df
 
@@ -55,16 +56,23 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
-    x = np.asarray(x)
-    h = 0.1
+    x = np.asarray(x)  # 将输入转换为numpy数组
+    is_scalar = False
+    if x.ndim == 0:  # 检查是否为标量
+        x = np.array([x])
+        is_scalar = True
+    
     n = len(x)
     d = np.zeros((max_order + 1, n), float)
     for i in range(max_order + 1):
         di = (f(x + h) - f(x - h)) / (2 * h)
         if i > 0:
-            di = d[i - 1, :]  # 初始值，用于外推
-        d[i, :] = di
+            di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
+        d[i] = di
         h *= 0.5  # 每层外推步长减半
+    
+    if is_scalar:  # 如果输入是标量，返回一维数组
+        return d[:, 0]
     return d
 
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
@@ -83,7 +91,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     # TODO: 实现四个子图的绘制：
     # 1. 导数对比图
     ax1.plot(x, dy_central, label='Central Difference')
-    ax1.plot(x, dy_richardson[0, :], label='Richardson (Order 0)')
+    ax1.plot(x, dy_richardson[0], label='Richardson (Order 0)')
     ax1.plot(x, df_analytical(x), label='Analytical', linestyle='--')
     ax1.set_title('Derivative Comparison')
     ax1.set_xlabel('x')
@@ -91,13 +99,14 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax1.legend()
     # 2. 误差分析图（对数坐标）
     ax2.loglog(x, np.abs(dy_central - df_analytical(x)), label='Central Difference')
-    ax2.loglog(x, np.abs(dy_richardson[0, :] - df_analytical(x)), label='Richardson (Order 0)')
+    ax2.loglog(x, np.abs(dy_richardson[0] - df_analytical(x)), label='Richardson (Order 0)')
     ax2.set_title('Error Analysis')
     ax2.set_xlabel('x')
     ax2.set_ylabel('Error')
     ax2.legend()
     # 3. Richardson外推不同阶数误差对比图（对数坐标）
-    ax3.loglog(x, np.abs(dy_richardson - df_analytical(x).reshape(1, -1)), label=[f'Order {i}' for i in range(dy_richardson.shape[0])])
+    for i in range(dy_richardson.shape[0]):
+        ax3.loglog(x, np.abs(dy_richardson[i] - df_analytical(x)), label=f'Order {i}')
     ax3.set_title('Richardson Extrapolation Error')
     ax3.set_xlabel('x')
     ax3.set_ylabel('Error')
@@ -116,8 +125,9 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax4.set_ylabel('Mean Error')
     ax4.legend()
     ax4.grid(True)
-
     plt.show()
+
+    plt.savefig('derivative_comparison.png')
 
 def main():
     """运行数值微分实验的主函数"""
