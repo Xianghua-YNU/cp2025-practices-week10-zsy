@@ -12,10 +12,6 @@ def q3a(T):
     # 1. 将温度转换为以 10^8 K 为单位
     # 2. 注意处理温度为零的特殊情况
     # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
-    if T < 0:
-        raise ValueError("Temperature should be non-negative.")
-    
-    # 将温度转换为以 1e8 K 为单位的温度
     T8 = T / 1e8
     
     # 在温度为零时返回零
