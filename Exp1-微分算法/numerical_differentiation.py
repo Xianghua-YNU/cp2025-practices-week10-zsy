@@ -83,44 +83,60 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     """
     # 创建四个子图
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 12))
-   
+    plt.tight_layout()
+    
     # TODO: 实现四个子图的绘制：
     # 1. 导数对比图
-    ax1.plot(x, dy_central, label='Central Difference')
-    ax1.plot(x, dy_richardson[0], label='Richardson (Order 1)')  # 使用第1阶
+    ax1.plot(x_central, dy_central, label='Central Difference')
+    ax1.plot(x, dy_richardson[0], label='Richardson (Order 1)')  # 使用第1阶Richardson方法
     ax1.plot(x, df_analytical(x), label='Analytical', linestyle='--')
     ax1.set_title('Derivative Comparison')
     ax1.set_xlabel('x')
-    ax1.set_ylabel('f\'(x)')
+    ax1.set_ylabel("f'(x)")
     ax1.legend()
     # 2. 误差分析图（对数坐标）
-    ax2.loglog(x, np.abs(dy_central - df_analytical(x)), label='Central Difference')
-    ax2.loglog(x, np.abs(dy_richardson[0] - df_analytical(x)), label='Richardson (Order 1)')  # 使用第1阶
+    error_central = np.abs(dy_central - df_analytical(x_central))
+    error_richardson = np.abs(dy_richardson[0] - df_analytical(x))
+    ax2.plot(x_central, error_central, 'ro', markersize=4, label='Central Difference Error')
+    ax2.plot(x, error_richardson, 'g-', markersize=4, label='Richardson Error')
+    ax2.set_yscale('log')
     ax2.set_title('Error Analysis')
     ax2.set_xlabel('x')
-    ax2.set_ylabel('Error')
+    ax2.set_ylabel('Absolute Error (log scale)')
     ax2.legend()
+    ax2.grid(True)
     # 3. Richardson外推不同阶数误差对比图（对数坐标）
-    for i in range(len(dy_richardson)):
-        ax3.loglog(x, np.abs(dy_richardson[i] - df_analytical(x)), label=f'Order {i+1}')  # 从1阶开始
-    ax3.set_title('Richardson Extrapolation Error')
+    for i, order in enumerate(['1st', '2nd', '3rd']):
+        error = np.abs(dy_richardson[i] - df_analytical(x))
+        ax3.plot(x, error, marker='^', markersize=4, label=f'Richardson {order}')
+    ax3.set_yscale('log')
+    ax3.set_title('Richardson Extrapolation Error Comparison')
     ax3.set_xlabel('x')
-    ax3.set_ylabel('Error')
+    ax3.set_ylabel('Absolute Error (log scale)')
     ax3.legend()
+    ax3.grid(True)
 
     # 4. 步长敏感性分析图（双对数坐标）
-    h_values = np.array([0.1, 0.01, 0.001, 1e-4, 1e-5, 1e-6])
-    mean_errors = []
-    for current_h in h_values:
-        dy_rich = richardson_derivative_all_orders(x, f, current_h, max_order=3)
-        mean_errors.append(np.mean(np.abs(dy_rich - df_analytical(x).reshape(1, -1)), axis=1))
-    mean_errors = np.array(mean_errors)
-    
-    for i in range(len(mean_errors[0])):
-        ax4.loglog(h_values, mean_errors[:, i], marker='o', label=f'Order {i+1}')  # 从1阶开始
-    ax4.set_title('Step Size Sensitivity')
-    ax4.set_xlabel('Step Size (h)')
-    ax4.set_ylabel('Mean Error')
+    h_values = np.logspace(-6, -1, 20)
+    x_test = 0.0
+    central_errors = []
+    richardson_errors = []
+    expected = df_analytical(x_test)
+
+    for h in h_values:
+        # 中心差分误差
+        central_result = (f(x_test + h) - f(x_test - h)) / (2 * h)
+        central_errors.append(abs(central_result - expected))
+
+        # Richardson外推误差（2阶）
+        rich_result = richardson_derivative_all_orders(x_test, f, h, max_order=3)[1]
+        richardson_errors.append(abs(rich_result - expected))
+
+    ax4.loglog(h_values, central_errors, 'ro-', label='Central Difference')
+    ax4.loglog(h_values, richardson_errors, 'g-', label='Richardson (2nd Order)')
+    ax4.set_title('Step Size Sensitivity Analysis')
+    ax4.set_xlabel('Step Size h (log scale)')
+    ax4.set_ylabel('Absolute Error (log scale)')
     ax4.legend()
     ax4.grid(True)
     
@@ -132,17 +148,17 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
 def main():
     """运行数值微分实验的主函数"""
     # TODO: 设置实验参数
-    x = np.linspace(-2, 2, 21)
+    x = np.linspace(-2, 2, 19)
     h = 0.1
     max_order = 3
     # TODO: 获取解析导数函数
     df_analytical = get_analytical_derivative()
     # TODO: 计算中心差分导数
-    dy_central = calculate_central_difference(x[1:-1], f, h)
+    dy_central = calculate_central_difference(x, f, h)
     # TODO: 计算Richardson外推导数
     dy_richardson = richardson_derivative_all_orders(x, f, h, max_order)
     # TODO: 绘制结果对比图
-    create_comparison_plot(x, x[1:-1], dy_central, dy_richardson, df_analytical)
+    create_comparison_plot(x, x, dy_central, dy_richardson, df_analytical)
     plt.savefig('derivative_comparison.png')
 
 if __name__ == '__main__':
