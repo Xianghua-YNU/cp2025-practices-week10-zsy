@@ -22,8 +22,10 @@ def get_analytical_derivative():
     """
     # TODO: 使用sympy计算解析导数并返回可调用的函数
     x = symbols('x')
-    expr = diff(1 + 0.5 * tanh(2 * x), x)
-    return lambdify(x, expr)
+    f_sym = 1 + 0.5 * tanh(2 * x)
+    f_prime_sym = diff(f_sym, x)
+    f_prime_func = lambdify(x, f_prime_sym)
+    return f_prime_func
 
 def calculate_central_difference(x, f):
     """使用中心差分法计算数值导数
@@ -54,26 +56,20 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
-    x = np.asarray(x)  # 将输入转换为numpy数组
-    h = 0.1
-    is_scalar = False
-    if x.ndim == 0:
-        x = np.array([x])
-        is_scalar = True
+    R = np.zeros((max_order + 1, max_order + 1))
     
-    n = len(x)
-    d = np.zeros((max_order + 1, n), float)
+    # 计算第一列（不同步长的中心差分）
     for i in range(max_order + 1):
-        di = (f(x + h) - f(x - h)) / (2 * h)
-        if i > 0:
-            di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
-        d[i] = di
-        h *= 0.5
+        hi = h / (2**i)
+        R[i, 0] = (f(x + hi) - f(x - hi)) / (2 * hi)
     
-    if is_scalar:
-        return d[:, 0]
-    return d
-
+    # Richardson外推
+    for j in range(1, max_order + 1):
+        for i in range(max_order - j + 1):
+            R[i, j] = (4**j * R[i+1, j-1] - R[i, j-1]) / (4**j - 1)
+    
+    return [R[0, j] for j in range(1, max_order + 1)]
+    
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
     """创建对比图，展示导数计算结果和误差分析
     
