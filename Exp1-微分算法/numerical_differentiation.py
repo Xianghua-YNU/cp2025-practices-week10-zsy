@@ -56,11 +56,6 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
     x = np.asarray(x)
-    is_scalar = False
-    if x.ndim == 0:
-        x = np.array([x])
-        is_scalar = True
-
     n = len(x)
     d = np.zeros((max_order + 1, n), float)
     current_h = h
@@ -71,10 +66,7 @@ def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
             d[i] = (4 ** i * d[i] - d[i - 1]) / (4 ** i - 1)
         current_h *= 0.5
 
-    if is_scalar:
-        return d[1:max_order + 1, 0]  # 返回第1到max_order阶
-    else:
-        return d[1:max_order + 1]
+    return d[1:max_order + 1]
     
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
@@ -89,7 +81,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     """
     # 创建四个子图
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 12))
-    plt.tight_layout()
+   
     # TODO: 实现四个子图的绘制：
     # 1. 导数对比图
     ax1.plot(x, dy_central, label='Central Difference')
@@ -129,14 +121,9 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax4.set_ylabel('Mean Error')
     ax4.legend()
     ax4.grid(True)
-
-    errors = [abs(r - expected) for r in results]
-for i in range(len(errors)-1):
-    assert errors[i] > errors[i+1], f"Richardson外推精度未随阶数提高而提高。误差序列：{errors}"
-
     
+    plt.tight_layout()
     plt.show()
-    
     plt.savefig('derivative_comparison.png')
     
 
