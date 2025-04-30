@@ -43,7 +43,7 @@ def calculate_central_difference(x, f):
     df = (f(x + h) - f(x - h)) / (2 * h)
     return df
 
-def richardson_derivative_all_orders(x, f, h, max_order=3):
+def richardson_derivative_all_orders(x, f, h=0.1, max_order=3):
     """使用Richardson外推法计算不同阶数的导数值
     
     参数：
@@ -56,19 +56,25 @@ def richardson_derivative_all_orders(x, f, h, max_order=3):
         列表，不同阶数计算的导数值
     """
     # TODO: 实现Richardson外推法计算不同阶数的导数值
-    R = np.zeros((max_order + 1, max_order + 1))
     
-    # 计算第一列（不同步长的中心差分）
+    x = np.asarray(x)
+    is_scalar = False
+    if x.ndim == 0:
+        x = np.array([x])
+        is_scalar = True
+    
+    n = len(x)
+    d = np.zeros((max_order + 1, n), float)
     for i in range(max_order + 1):
-        hi = h / (2**i)
-        R[i, 0] = (f(x + hi) - f(x - hi)) / (2 * hi)
+        di = (f(x + h) - f(x - h)) / (2 * h)
+        if i > 0:
+            di = (4 ** i * d[i - 1] - d[i - 1]) / (4 ** i - 1)
+        d[i] = di
+        h *= 0.5
     
-    # Richardson外推
-    for j in range(1, max_order + 1):
-        for i in range(max_order - j + 1):
-            R[i, j] = (4**j * R[i+1, j-1] - R[i, j-1]) / (4**j - 1)
-    
-    return [R[0, j] for j in range(1, max_order + 1)]
+    if is_scalar:
+        return d[:, 0]
+    return d
     
 def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytical):
     """创建对比图，展示导数计算结果和误差分析
