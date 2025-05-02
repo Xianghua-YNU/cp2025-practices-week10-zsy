@@ -12,7 +12,12 @@ def q3a(T):
     # 1. 将温度转换为以 10^8 K 为单位
     # 2. 注意处理温度为零的特殊情况
     # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
-    pass
+    if T <= 0:
+        return 0.0
+    
+    T8 = T / 1e8
+    
+    return 5.09e11 * T8**(-3.0) * np.exp(-44.027 / T8)
 
 def plot_rate(filename="rate_vs_temp.png"):
     """绘制速率因子随温度变化的 log-log 图"""
@@ -22,7 +27,20 @@ def plot_rate(filename="rate_vs_temp.png"):
     # 2. 计算对应的速率值
     # 3. 使用 plt.loglog 绘制双对数图
     # 4. 添加适当的标签和标题
-    pass
+    temps = np.logspace(8, 10, 200)  # 从1e8 K到1e10 K生成200个点
+
+    rates = [q3a(T) for T in temps]
+    
+    plt.figure(figsize=(10, 6))
+    plt.loglog(temps, rates, label='3-alpha反应速率')
+    
+    plt.xlabel(' T (K)')
+    plt.ylabel('Rate factor q / (rho^2 Y^3) (erg cm^6 / (g^3 s))')
+    plt.title('3-alpha the relationship between reaction rate and temperature')
+    plt.grid(True, which="both", ls="--")
+    plt.legend()
+    plt.savefig(filename)
+    plt.close()
 
 if __name__ == "__main__":
     # 计算并打印 nu 值
@@ -40,3 +58,15 @@ if __name__ == "__main__":
     # 4. 注意处理特殊情况（如 q = 0）
 
     # TODO: 调用绘图函数展示结果
+    for T0 in temperatures_K:
+        q0 = q3a(T0)
+        q_plus = q3a(T0 + h*T0)
+        dq_dT = (q_plus - q0) / (h*T0)
+        if q0 == 0:
+            nu = 0
+        else:
+            nu = T0 * dq_dT / q0
+        
+        print(f"{T0:.1e}   :   {nu:.3f}")
+    
+    plot_rate()
