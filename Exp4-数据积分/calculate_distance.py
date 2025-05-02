@@ -11,7 +11,7 @@ def main():
         
         # 2. 读取数据（TODO：使用numpy.loadtxt）
         data = np.loadtxt(data_file)
-        t = data[:, 0]  # 时间列
+        t = data[:, 0]  # 时间列 
         v = data[:, 1]  # 速度列
 
         # 3. 计算总距离（TODO：使用numpy.trapz）
